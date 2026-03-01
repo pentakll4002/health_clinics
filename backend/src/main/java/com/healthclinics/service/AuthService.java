@@ -28,6 +28,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
     @Transactional
     public AuthResponse login(LoginRequest request) {
@@ -71,7 +72,8 @@ public class AuthService {
         
         pendingRegisterRepository.save(pending);
         
-        // TODO: Send OTP email
+        // Send OTP email
+        emailService.sendOtpEmail(request.getEmail(), otp);
         
         return ApiResponse.success("OTP sent to your email. Please verify to complete registration.", 
                 Map.of("email", request.getEmail()));
@@ -92,7 +94,8 @@ public class AuthService {
         pending.setOtpExpiresAt(LocalDateTime.now().plusMinutes(5));
         pendingRegisterRepository.save(pending);
         
-        // TODO: Send OTP email
+        // Send OTP email
+        emailService.sendOtpEmail(email, otp);
         
         return ApiResponse.success("OTP sent to your email", Map.of("email", email));
     }
@@ -147,7 +150,21 @@ public class AuthService {
         }
         
         String otp = generateOtp();
-        // TODO: Store OTP and send email
+        
+        // Store OTP in pending register for verification
+        User user = userOpt.get();
+        PendingRegister pending = pendingRegisterRepository.findByEmail(email)
+                .orElse(PendingRegister.builder()
+                        .name(user.getName())
+                        .email(email)
+                        .password(user.getPassword())
+                        .build());
+        pending.setOtp(otp);
+        pending.setOtpExpiresAt(LocalDateTime.now().plusMinutes(5));
+        pendingRegisterRepository.save(pending);
+        
+        // Send OTP email
+        emailService.sendPasswordResetEmail(email, otp);
         
         return ApiResponse.success("OTP sent to your email", Map.of("email", email));
     }
@@ -156,8 +173,32 @@ public class AuthService {
         SecurityContextHolder.clearContext();
     }
 
+    @Transactional
+    public ApiResponse<?> resetPassword(String email, String otp, String newPassword) {
+        PendingRegister pending = pendingRegisterRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("No password reset request found"));
+
+        if (!pending.getOtp().equals(otp)) {
+            throw new RuntimeException("Invalid OTP");
+        }
+
+        if (pending.getOtpExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("OTP expired");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        pendingRegisterRepository.deleteByEmail(email);
+
+        return ApiResponse.success("Password reset successfully", null);
+    }
+
     public UserProfileDTO getUserProfile(String email) {
-        User user = userRepository.findByEmailWithBenhNhan(email)
+        User user = userRepository.findByEmailWithAllRelations(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         UserProfileDTO profile = new UserProfileDTO();

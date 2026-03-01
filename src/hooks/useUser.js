@@ -34,19 +34,22 @@ export function useUser() {
     enabled: !!token, // Chỉ enable khi có token
   });
 
-  const user = data?.user;
-  // Check both snake_case and camelCase (Laravel might return either)
-  const nhanVien = user?.nhan_vien || user?.nhanVien;
-  // Check if user has nhan_vien relationship OR role is nhan_vien
+  // Backend returns UserProfileDTO directly, not wrapped in {user: ...}
+  const user = data; // data IS the user profile
+  
+  // Check both snake_case and camelCase
+  const nhanVien = user?.nhanVien;
+  // Check if user has nhanVien relationship OR role is nhan_vien
   const isNhanVien = (nhanVien !== null && nhanVien !== undefined) || user?.role === 'nhan_vien';
 
   // Debug log để kiểm tra
   if (!isLoading && user) {
     console.log('👤 useUser - User data:', {
       hasUser: !!user,
+      userData: user,
       hasNhanVien: !!nhanVien,
       nhanVienKeys: nhanVien ? Object.keys(nhanVien) : null,
-      nhanVienNhom: nhanVien?.nhom_nguoi_dung || nhanVien?.nhomNguoiDung,
+      nhanVienData: nhanVien,
     });
   }
   

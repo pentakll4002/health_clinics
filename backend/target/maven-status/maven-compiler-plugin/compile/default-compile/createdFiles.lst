@@ -53,9 +53,11 @@ com\healthclinics\dto\LoginRequest.class
 com\healthclinics\entity\CachDung.class
 com\healthclinics\entity\PhieuKham.class
 com\healthclinics\entity\ToaThuocId.class
+com\healthclinics\config\DataInitializer.class
 com\healthclinics\config\SecurityConfig.class
 com\healthclinics\dto\DanhSachTiepNhanDTO$DanhSachTiepNhanDTOBuilder.class
 com\healthclinics\dto\ChucNangDTO$ChucNangDTOBuilder.class
+com\healthclinics\service\EmailService.class
 com\healthclinics\dto\BenhNhanDTO.class
 com\healthclinics\entity\PhieuNhapThuoc$PhieuNhapThuocBuilder.class
 com\healthclinics\exception\GlobalExceptionHandler.class

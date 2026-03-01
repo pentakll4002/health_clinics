@@ -61,15 +61,17 @@ const SignIn = () => {
     setError(null);
     try {
       const response = await axiosInstance.post('/login', data);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      const { token, userId, name, email, role } = response.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify({ id: userId, name, email, role }));
 
-      const user = response.data.user;
-      if (user.group === 'benh_nhan' || user.role === 'benh_nhan') {
+      // Navigate based on role
+      if (role === 'patient') {
         navigate('/benh-nhan');
-      } else if (user.group === 'nhan_vien' || user.role === 'nhan_vien') {
+      } else if (role === 'DOCTOR' || role === 'RECEPTIONIST') {
         navigate('/dashboard');
-      } else if (user.group === 'admin' || user.role === 'admin') {
+      } else if (role === 'ADMIN' || role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/');

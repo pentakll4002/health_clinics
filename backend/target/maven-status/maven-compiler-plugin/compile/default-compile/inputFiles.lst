@@ -1,4 +1,5 @@
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\config\CustomUserDetailsService.java
+C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\config\DataInitializer.java
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\config\JwtAuthenticationFilter.java
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\config\JwtTokenUtil.java
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\config\SecurityConfig.java
@@ -98,6 +99,7 @@ C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\service\BenhN
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\service\ChucNangService.java
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\service\DanhSachTiepNhanService.java
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\service\DichVuService.java
+C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\service\EmailService.java
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\service\HoaDonService.java
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\service\LichKhamService.java
 C:\DoAnJava\health_clinics\backend\src\main\java\com\healthclinics\service\LoaiBenhService.java

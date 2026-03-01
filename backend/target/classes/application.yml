@@ -4,7 +4,7 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/health_clinics
-    username: api_user
+    username: health_clinics
     password: 123456
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -26,8 +26,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_PASSWORD:}
+    username: hiroplayga@gmail.com
+    password: tfac sjrm kfpu wppw
     properties:
       mail:
         smtp:

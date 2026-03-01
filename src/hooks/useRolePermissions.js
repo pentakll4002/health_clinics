@@ -11,47 +11,49 @@ export function useRolePermissions() {
     console.log('🔍 useRolePermissions - Debug:', {
       hasUser: !!user,
       hasNhanVien: !!nhanVien,
-      userNhanVien: user?.nhan_vien || user?.nhanVien,
+      userData: user,
       nhanVienData: nhanVien,
     });
     
     if (nhanVien) {
-      const nhom = nhanVien.nhomNguoiDung || nhanVien.nhom_nguoi_dung || nhanVien.nhomNguoiDung;
-      if (nhom?.MaNhom) {
-        const code = nhom.MaNhom.startsWith('@') ? nhom.MaNhom : `@${nhom.MaNhom}`;
-        console.log('Role từ nhanVien hook:', code);
+      // Backend returns maNhom (uppercase), convert to lowercase
+      const maNhom = nhanVien.maNhom || nhanVien.MaNhom;
+      if (maNhom) {
+        const code = maNhom.startsWith('@') ? maNhom.toLowerCase() : `@${maNhom.toLowerCase()}`;
+        console.log('Role từ nhanVien:', code);
         return code;
       }
     }
     
     const userNhanVien = user?.nhan_vien || user?.nhanVien;
     if (userNhanVien) {
-      const nhom = userNhanVien.nhom_nguoi_dung || userNhanVien.nhomNguoiDung || userNhanVien.nhomNguoiDung;
-      if (nhom?.MaNhom) {
-        const code = nhom.MaNhom.startsWith('@') ? nhom.MaNhom : `@${nhom.MaNhom}`;
-        console.log('Role từ user.nhan_vien:', code);
+      const maNhom = userNhanVien.maNhom || userNhanVien.MaNhom;
+      if (maNhom) {
+        const code = maNhom.startsWith('@') ? maNhom.toLowerCase() : `@${maNhom.toLowerCase()}`;
+        console.log('Role từ user.nhanVien:', code);
         return code;
-      }
-      if (userNhanVien.ID_Nhom && !nhom) {
-        console.warn('Có ID_Nhom nhưng không có relationship. Cần kiểm tra lại.');
       }
     }
     
-    if (user?.benh_nhan || user?.benhNhan) {
-      const benhNhan = user.benh_nhan || user.benhNhan;
-      const nhom = benhNhan.nhom_nguoi_dung || benhNhan.nhomNguoiDung;
-      if (nhom?.MaNhom) {
-        const code = nhom.MaNhom.startsWith('@') ? nhom.MaNhom : `@${nhom.MaNhom}`;
-        console.log('Role từ benhNhan:', code);
-        return code;
+    // Fallback: use user.role directly
+    if (user?.role) {
+      const role = user.role.toLowerCase();
+      if (role === 'admin') {
+        console.log('Role từ user.role: @admin');
+        return '@admin';
       }
-      console.log('Role fallback: @patient');
-      return '@patient';
-    }
-    
-    if (user?.role === 'patient') {
-      console.log('Role từ user.role: @patient');
-      return '@patient';
+      if (role === 'doctor') {
+        console.log('Role từ user.role: @doctor');
+        return '@doctor';
+      }
+      if (role === 'receptionist') {
+        console.log('Role từ user.role: @receptionist');
+        return '@receptionist';
+      }
+      if (role === 'patient') {
+        console.log('Role từ user.role: @patient');
+        return '@patient';
+      }
     }
     
     console.warn('Không tìm thấy role code');

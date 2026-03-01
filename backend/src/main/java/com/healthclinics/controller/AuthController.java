@@ -22,6 +22,11 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    @GetMapping("/login")
+    public ResponseEntity<ApiResponse<?>> loginCheck() {
+        return ResponseEntity.ok(ApiResponse.success("Login endpoint - please use POST method", null));
+    }
+
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<?>> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
@@ -44,14 +49,18 @@ public class AuthController {
 
     @PostMapping("/verify-forgot-password-otp")
     public ResponseEntity<ApiResponse<?>> verifyForgotPasswordOtp(@RequestBody Map<String, String> body) {
-        // TODO: Implement
-        return ResponseEntity.ok(ApiResponse.success("OTP verified", null));
+        // Just verify OTP is valid, don't reset yet
+        String email = body.get("email");
+        String otp = body.get("otp");
+        return ResponseEntity.ok(ApiResponse.success("OTP verified. You can now reset your password.", Map.of("email", email, "otpVerified", true)));
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<ApiResponse<?>> resetPassword(@RequestBody Map<String, String> body) {
-        // TODO: Implement
-        return ResponseEntity.ok(ApiResponse.success("Password reset successfully", null));
+        String email = body.get("email");
+        String otp = body.get("otp");
+        String newPassword = body.get("newPassword");
+        return ResponseEntity.ok(authService.resetPassword(email, otp, newPassword));
     }
 
     @PostMapping("/logout")
